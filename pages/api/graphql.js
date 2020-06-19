@@ -1,8 +1,19 @@
 import {gql, ApolloServer} from "apollo-server-micro";
+import { makeExecutableSchema } from 'graphql-tools';
+import {merge} from "lodash";
 import Dataloader from "dataloader";
 import Cors from "micro-cors";
 
 import knex from "knex";
+
+import {
+    typeDef as Persona,
+    resolvers as personaResolvers,
+} from './schema/persona';
+import {
+    typeDef as Riesgo,
+    resolvers as riesgoResolvers,
+} from './schema/riesgo';
 
 const db = knex({
   client: "pg",
@@ -19,21 +30,6 @@ const typeDefs = gql`
     type Query {
         riesgos(first: Int = 25, skip: Int = 0): [Riesgo!]!
     }
-
-    type Riesgo {
-        id: ID!,
-        tipo: String!,
-        persona: Persona,
-    }
-
-    type Persona {
-        id: ID,
-        nombres: String,
-        apellidos: String,
-        direccion: String,
-        ciudad: String,
-        provincia: String,
-    }
 `;
 
 const resolvers = {
@@ -47,22 +43,13 @@ const resolvers = {
 
         },
     },
-
-    Riesgo: {
-        id: (riesgo, args, _context) => riesgo.id,
-        persona: (riesgo, args, {loader}) => {
-            // return db.select("*")
-            // .from("personas")
-            // .where({id: riesgo.idNino})
-            // .first();
-            return loader.persona.load(riesgo.idNino);
-        },
-    },
-
-    Persona: {
-        id: (persona, args, _context) => persona.id,
-    }
 }
+
+
+const schema = makeExecutableSchema({
+    typeDefs: [ typeDefs, Riesgo, Persona ],
+    resolvers: merge(resolvers, personaResolvers, riesgoResolvers),
+});
 
 const loader = {
     persona: new Dataloader(ids => {
@@ -74,15 +61,16 @@ const loader = {
     })
 }
 
+
 const apolloServer = new ApolloServer({
-    typeDefs,
-    resolvers,
+    schema,
     context: () => {
         return { loader };
     },
 });
 
 const handler = apolloServer.createHandler({ path: "/api/graphql" });
+
 
 export const config = {
     api: {
