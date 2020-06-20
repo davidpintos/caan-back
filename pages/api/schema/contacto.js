@@ -1,5 +1,5 @@
 export const typeDef = `
-    type Persona {
+    type Contacto {
         id: ID,
         nombres: String,
         apellidos: String,
@@ -8,17 +8,12 @@ export const typeDef = `
         provincia: String,
         telefono: String,
         telefonoAlternativo: String,
-        dni: String,
-        edad: String,
-        seguimiento: String,
-        sexo: String,
-        lugarResguardo: LugarResguardo,
-        resguardantes: [Resguardante],
+        institucionQuePertenece: String,
     }
 `;
 
 export const resolvers = {
-    Persona: {
-        id: (persona, args, _context) => persona.id,
+    Contacto: {
+        id: (contacto, args, _context) => contacto.id,
     },
 };

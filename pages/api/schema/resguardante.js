@@ -1,5 +1,5 @@
 export const typeDef = `
-    type Persona {
+    type Resguardante {
         id: ID,
         nombres: String,
         apellidos: String,
@@ -8,17 +8,15 @@ export const typeDef = `
         provincia: String,
         telefono: String,
         telefonoAlternativo: String,
-        dni: String,
+        esAyudante: Boolean,
         edad: String,
-        seguimiento: String,
-        sexo: String,
-        lugarResguardo: LugarResguardo,
-        resguardantes: [Resguardante],
+        dni: String,
+        personas: [Persona],
     }
 `;
 
 export const resolvers = {
-    Persona: {
-        id: (persona, args, _context) => persona.id,
-    },
+    Resguardante: {
+        id: (resguardante, args, _context) => resguardante.id,
+    }
 };

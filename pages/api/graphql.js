@@ -6,21 +6,21 @@ import Cors from "micro-cors";
 
 import knex from "knex";
 
-import {
-    typeDef as Persona,
-    resolvers as personaResolvers,
-} from './schema/persona';
-import {
-    typeDef as Riesgo,
-    resolvers as riesgoResolvers,
-} from './schema/riesgo';
+import { typeDef as Contacto, resolvers as contactoResolvers } from './schema/contacto';
+import { typeDef as Evidencia, resolvers as evidenciaResolvers } from './schema/evidencia';
+import { typeDef as Foto, resolvers as fotoResolvers } from './schema/foto';
+import { typeDef as Implicado, resolvers as implicadoResolvers } from './schema/implicado';
+import { typeDef as LugarResguardo, resolvers as lugarResguardoResolvers } from './schema/lugarResguardo';
+import { typeDef as Persona, resolvers as personaResolvers } from './schema/persona';
+import { typeDef as Resguardante, resolvers as resguardanteResolvers } from './schema/resguardante';
+import { typeDef as Riesgo, resolvers as riesgoResolvers } from './schema/riesgo';
+import { typeDef as Usuario, resolvers as usuarioResolvers } from './schema/usuario';
 
 const db = knex({
   client: "pg",
   connection: 'postgres://davidp@localhost:5432/caan',
   debug: true, // to see queries to the DB
 });
-
 
 const cors = Cors({
     allowMethods: ["POST", "OPTIONS"]
@@ -29,12 +29,16 @@ const cors = Cors({
 const typeDefs = gql`
     type Query {
         riesgos(first: Int = 25, skip: Int = 0): [Riesgo!]!
+    },
+
+    type Mutation {
+        createPersona(nombres: String, apellidos: String): Persona
     }
 `;
 
 const resolvers = {
     Query: {
-        riesgos: (_parent, args, _context) => {
+        riesgos: (parent, args, context) => {
             return db.select("*")
             .from("riesgos")
             .orderBy("tipo", "asc")
@@ -43,12 +47,52 @@ const resolvers = {
 
         },
     },
+
+    Mutation: {
+        createPersona: async (parent, {
+            nombres, apellidos,
+        }) => {
+            const [personaId] = await db.insert({
+                nombres: nombres,
+                apellidos: apellidos,
+            }).returning('id').into('personas');
+
+
+            return {
+                id: personaId,
+                nombres,
+                apellidos,
+            }
+        }
+    }
 }
 
 
 const schema = makeExecutableSchema({
-    typeDefs: [ typeDefs, Riesgo, Persona ],
-    resolvers: merge(resolvers, personaResolvers, riesgoResolvers),
+    typeDefs: [
+        typeDefs,
+        Contacto,
+        Evidencia,
+        Foto,
+        Implicado,
+        LugarResguardo,
+        Resguardante,
+        Riesgo,
+        Persona,
+        Usuario,
+    ],
+    resolvers: merge(
+        resolvers,
+        contactoResolvers,
+        evidenciaResolvers,
+        fotoResolvers,
+        implicadoResolvers,
+        lugarResguardoResolvers,
+        personaResolvers,
+        resguardanteResolvers,
+        riesgoResolvers,
+        usuarioResolvers,
+    ),
 });
 
 const loader = {
