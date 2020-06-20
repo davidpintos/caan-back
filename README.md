@@ -32,10 +32,12 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 ##Articles
 
 https://start-up.house/en/blog/articles/graphql-apollo
+
 https://levelup.gitconnected.com/graphql-mutations-graphql-essentials-part-ii-f4f255b34f03
 
 Create
 
+```bash
 mutation {
     createPersona(
       	nombres: "Pancho",
@@ -46,11 +48,13 @@ mutation {
       apellidos
     }
   }
-
+```
 Delete:
 
+```bash
 mutation {
   deletePersona(
       id: 6,
   )
 }
+
