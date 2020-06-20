@@ -28,3 +28,29 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/import?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+##Articles
+
+https://start-up.house/en/blog/articles/graphql-apollo
+https://levelup.gitconnected.com/graphql-mutations-graphql-essentials-part-ii-f4f255b34f03
+
+Create
+
+mutation {
+    createPersona(
+      	nombres: "Pancho",
+      	apellidos: "Perez",
+      ) {
+      id
+      nombres
+      apellidos
+    }
+  }
+
+Delete:
+
+mutation {
+  deletePersona(
+      id: 6,
+  )
+}
