@@ -32,7 +32,8 @@ const typeDefs = gql`
     },
 
     type Mutation {
-        createPersona(nombres: String, apellidos: String): Persona
+        createPersona(nombres: String, apellidos: String): Persona,
+        deletePersona(id: Int): Boolean,
     }
 `;
 
@@ -63,6 +64,14 @@ const resolvers = {
                 nombres,
                 apellidos,
             }
+        },
+        deletePersona: async (parent, {
+            id,
+        }) => {
+            const result = await db.del().where({id: id}).from('personas');
+
+
+            return result;
         }
     }
 }
